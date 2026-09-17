@@ -4,6 +4,7 @@ import { ArtworkCard } from '../components/ArtworkCard';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { EmptyState } from '../components/UI';
 import { useFavorites } from '../context/FavoritesContext';
+import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 import { artworks, getArtist, getArtwork } from '../data/museumData';
 
 export function ArtworkDetailPage() {
@@ -11,11 +12,19 @@ export function ArtworkDetailPage() {
   const artwork = getArtwork(artworkId);
   const artist = artwork ? getArtist(artwork.artistId) : undefined;
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { recordView } = useRecentlyViewed();
 
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [shareStatus, setShareStatus] = useState('');
   const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+
+  // Record this artwork in "recently viewed". recordView is stable, so this
+  // effect fires only when the artwork itself changes.
+  useEffect(() => {
+    if (artwork) recordView(artwork.id);
+  }, [artwork, recordView]);
 
   useEffect(() => {
     if (!zoomOpen) setZoom(1);
@@ -86,6 +95,31 @@ export function ArtworkDetailPage() {
     .slice(0, 3);
   const favorite = isFavorite(artwork.id);
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/works/${artwork.id}`;
+    const shareData = {
+      title: `${artwork.title} — The Meridian Archive`,
+      text: artwork.description,
+      url: shareUrl,
+    };
+
+    try {
+      if (typeof navigator !== 'undefined' && 'share' in navigator && typeof navigator.share === 'function') {
+        await navigator.share(shareData);
+        return;
+      }
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus('Link copied to clipboard');
+      } else {
+        setShareStatus(`Copy this link: ${shareUrl}`);
+      }
+    } catch {
+      setShareStatus('Unable to share right now');
+    }
+    window.setTimeout(() => setShareStatus(''), 2600);
+  };
+
   return (
     <>
       <Breadcrumbs items={[{ label: 'Collections', to: '/collections' }, { label: artwork.title }]} />
@@ -116,17 +150,35 @@ export function ArtworkDetailPage() {
             <div><dt>Dimensions</dt><dd>{artwork.dimensions}</dd></div>
             <div><dt>Location</dt><dd>{artwork.location}</dd></div>
           </dl>
-          <button
-            className={`button ${favorite ? 'button-dark' : 'button-outline-dark'} favorite-detail-button${favorite ? ' is-favorite' : ''}`}
-            type="button"
-            onClick={() => toggleFavorite(artwork.id)}
-            aria-pressed={favorite}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.7C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-1 4.3-8.5 9-8.5 9Z" />
-            </svg>
-            {favorite ? 'Saved to my collection' : 'Save to my collection'}
-          </button>
+          <div className="artwork-detail-actions">
+            <button
+              className={`button ${favorite ? 'button-dark' : 'button-outline-dark'} favorite-detail-button${favorite ? ' is-favorite' : ''}`}
+              type="button"
+              onClick={() => toggleFavorite(artwork.id)}
+              aria-pressed={favorite}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.7C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-1 4.3-8.5 9-8.5 9Z" />
+              </svg>
+              {favorite ? 'Saved to my collection' : 'Save to my collection'}
+            </button>
+            <button
+              className="button button-outline-dark share-detail-button"
+              type="button"
+              onClick={handleShare}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="6" cy="12" r="2.5" />
+                <circle cx="18" cy="6" r="2.5" />
+                <circle cx="18" cy="18" r="2.5" />
+                <path d="m8.2 10.8 7.6-3.6M8.2 13.2l7.6 3.6" />
+              </svg>
+              Share
+            </button>
+          </div>
+          {shareStatus && (
+            <p className="share-status" role="status">{shareStatus}</p>
+          )}
         </div>
       </section>
 

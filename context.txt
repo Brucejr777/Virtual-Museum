@@ -5619,198 +5619,153 @@ FILE: src/pages/ExhibitionDetailPage.tsx
 ================================================================================
 FILE: src/pages/ExhibitionsPage.tsx
 --------------------------------------------------------------------------------
-     1 | import { useEffect, useMemo, useState } from 'react';
-     2 | import { Link, useParams } from 'react-router-dom';
-     3 | import { ExhibitionCard } from '../components/ExhibitionCard';
-     4 | import { ArtistCard } from '../components/ArtistCard';
-     5 | import { Breadcrumbs } from '../components/Breadcrumbs';
-     6 | import { EmptyState, SectionHeading } from '../components/UI';
-     7 | import { artists, artworks, exhibitions, getArtist } from '../data/museumData';
-     8 | import type { Artwork } from '../types';
-     9 | 
-    10 | export function ExhibitionDetailPage() {
-    11 |   const { slug = '' } = useParams();
-    12 |   const exhibition = exhibitions.find((item) => item.slug === slug);
-    13 |   const [activeWork, setActiveWork] = useState<string>('');
-    14 | 
-    15 |   // Reset the active work when the exhibition changes.
-    16 |   useEffect(() => {
-    17 |     setActiveWork(exhibition?.workIds[0] ?? '');
-    18 |   }, [exhibition?.id]);
+     1 | import { useMemo, useState } from 'react';
+     2 | import { ExhibitionCard } from '../components/ExhibitionCard';
+     3 | import { EmptyState, PageHero, SectionHeading } from '../components/UI';
+     4 | import { exhibitions } from '../data/museumData';
+     5 | 
+     6 | export function ExhibitionsPage() {
+     7 |   const [query, setQuery] = useState('');
+     8 |   const [category, setCategory] = useState('All');
+     9 |   const [period, setPeriod] = useState('All');
+    10 | 
+    11 |   const categories = useMemo(
+    12 |     () => ['All', ...Array.from(new Set(exhibitions.map((exhibition) => exhibition.category)))],
+    13 |     [],
+    14 |   );
+    15 |   const periods = useMemo(
+    16 |     () => ['All', ...Array.from(new Set(exhibitions.map((exhibition) => exhibition.period)))],
+    17 |     [],
+    18 |   );
     19 | 
-    20 |   const activeArtwork = artworks.find((work) => work.id === activeWork) ?? undefined;
-    21 | 
-    22 |   const relatedExhibitions = useMemo(
-    23 |     () =>
-    24 |       exhibition?.relatedExhibitionIds
-    25 |         .map((id) => exhibitions.find((item) => item.id === id))
-    26 |         .filter(Boolean) ?? [],
-    27 |     [exhibition],
-    28 |   );
-    29 | 
-    30 |   const relatedArtists = useMemo(
-    31 |     () =>
-    32 |       exhibition?.relatedArtistIds
-    33 |         .map((id) => artists.find((item) => item.id === id))
-    34 |         .filter(Boolean) ?? [],
-    35 |     [exhibition],
-    36 |   );
-    37 | 
-    38 |   const featuredWorks = useMemo<Artwork[]>(
-    39 |     () =>
-    40 |       exhibition?.workIds
-    41 |         .map((id) => artworks.find((work) => work.id === id))
-    42 |         .filter((work): work is Artwork => Boolean(work)) ?? [],
-    43 |     [exhibition],
-    44 |   );
-    45 | 
-    46 |   if (!exhibition) {
-    47 |     return (
-    48 |       <EmptyState
-    49 |         title="Exhibition not found"
-    50 |         description="This gallery may be between installations. Return to the exhibition program to keep exploring."
-    51 |         action={<Link className="button button-dark" to="/exhibitions">View exhibitions</Link>}
-    52 |       />
-    53 |     );
-    54 |   }
-    55 | 
-    56 |   const onTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
-    57 |     const last = featuredWorks.length - 1;
-    58 |     if (last < 0) return;
-    59 | 
-    60 |     let nextIndex = index;
-    61 |     if (event.key === 'ArrowRight') nextIndex = index === last ? 0 : index + 1;
-    62 |     else if (event.key === 'ArrowLeft') nextIndex = index === 0 ? last : index - 1;
-    63 |     else if (event.key === 'Home') nextIndex = 0;
-    64 |     else if (event.key === 'End') nextIndex = last;
-    65 |     else return;
-    66 | 
-    67 |     event.preventDefault();
-    68 |     setActiveWork(featuredWorks[nextIndex].id);
-    69 |     const buttons = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
-    70 |     buttons?.[nextIndex]?.focus();
-    71 |   };
-    72 | 
-    73 |   return (
-    74 |     <>
-    75 |       <Breadcrumbs items={[{ label: 'Exhibitions', to: '/exhibitions' }, { label: exhibition.title }]} />
-    76 |       <section className="exhibition-intro">
-    77 |         <div className="exhibition-intro-copy">
-    78 |           <p className="eyebrow">{exhibition.category} · {exhibition.period}</p>
-    79 |           <h1>{exhibition.title}</h1>
-    80 |           <p className="exhibition-dek">{exhibition.dek}</p>
-    81 |           <p>{exhibition.description}</p>
-    82 |           <div className="exhibition-meta">
-    83 |             <span><small>Curator</small>{exhibition.curator}</span>
-    84 |             <span><small>Works</small>{exhibition.workIds.length} objects</span>
-    85 |             <span><small>Visit</small>Always open</span>
-    86 |           </div>
-    87 |         </div>
-    88 |         <div className="exhibition-intro-image" data-reveal>
-    89 |           <img src={exhibition.coverImage} alt="" />
-    90 |           <span className="image-caption">Gallery view · Meridian Archive</span>
-    91 |         </div>
-    92 |       </section>
-    93 | 
-    94 |       <section className="section section-tinted curator-section">
-    95 |         <div className="section-inner curator-card">
-    96 |           <div>
-    97 |             <p className="eyebrow">A note from the curator</p>
-    98 |             <h2>“{exhibition.dek.replace(/\.$/, '')}.”</h2>
-    99 |           </div>
-   100 |           <div>
-   101 |             <p>{exhibition.description}</p>
-   102 |             <p className="curator-signature">— {exhibition.curator}, Curator of Interpretive Programs</p>
-   103 |           </div>
-   104 |         </div>
-   105 |       </section>
-   106 | 
-   107 |       <section className="section">
-   108 |         <div className="section-inner">
-   109 |           <SectionHeading
-   110 |             eyebrow="Inside the gallery"
-   111 |             title="Featured works"
-   112 |             description="Choose an object to bring it closer. Each work opens a detailed record with materials, context, and provenance."
-   113 |           />
-   114 |           <div className="exhibition-gallery">
-   115 |             <div className="exhibition-gallery-main">
-   116 |               {activeArtwork ? (
-   117 |                 <Link className="exhibition-gallery-image" to={`/works/${activeArtwork.id}`}>
-   118 |                   <img src={activeArtwork.image} alt={activeArtwork.title} />
-   119 |                   <span className="gallery-zoom-label">
-   120 |                     View object record <span aria-hidden="true">→</span>
-   121 |                   </span>
-   122 |                 </Link>
-   123 |               ) : (
-   124 |                 <div className="empty-state"><h2>Select a work</h2></div>
-   125 |               )}
-   126 |             </div>
-   127 |             <div className="exhibition-gallery-thumbs" role="tablist" aria-label="Featured works">
-   128 |               {featuredWorks.map((work, index) => (
-   129 |                 <button
-   130 |                   className={activeWork === work.id ? 'is-active' : ''}
-   131 |                   key={work.id}
-   132 |                   type="button"
-   133 |                   onClick={() => setActiveWork(work.id)}
-   134 |                   onKeyDown={(event) => onTabKeyDown(event, index)}
-   135 |                   role="tab"
-   136 |                   aria-selected={activeWork === work.id}
-   137 |                   tabIndex={activeWork === work.id ? 0 : -1}
-   138 |                 >
-   139 |                   <img src={work.image} alt="" />
-   140 |                   <span>
-   141 |                     <strong>{work.title}</strong>
-   142 |                     <small>
-   143 |                       {work.artistId ? getArtist(work.artistId)?.name : 'Unknown maker'} · {work.date}
-   144 |                     </small>
-   145 |                   </span>
-   146 |                 </button>
-   147 |               ))}
-   148 |             </div>
-   149 |           </div>
-   150 |         </div>
-   151 |       </section>
-   152 | 
-   153 |       <section className="section exhibition-timeline-section">
-   154 |         <div className="section-inner">
-   155 |           <SectionHeading eyebrow="A route through time" title="The exhibition timeline" />
-   156 |           <div className="exhibition-timeline">
-   157 |             {exhibition.timeline.map((item, index) => (
-   158 |               <article className="exhibition-timeline-item" key={`${item.year}-${item.label}`}>
-   159 |                 <span className="timeline-index">0{index + 1}</span>
-   160 |                 <div>
-   161 |                   <span>{item.year}</span>
-   162 |                   <h3>{item.label}</h3>
-   163 |                   <p>{item.text}</p>
-   164 |                 </div>
-   165 |               </article>
-   166 |             ))}
-   167 |           </div>
-   168 |         </div>
-   169 |       </section>
-   170 | 
-   171 |       <section className="section section-tinted">
-   172 |         <div className="section-inner">
-   173 |           <SectionHeading eyebrow="Related artists" title="Makers in this room" />
-   174 |           <div className="artist-grid artist-grid-three">
-   175 |             {relatedArtists.map((artist) => artist && <ArtistCard key={artist.id} artist={artist} />)}
-   176 |           </div>
-   177 |         </div>
-   178 |       </section>
-   179 | 
-   180 |       {relatedExhibitions.length > 0 && (
-   181 |         <section className="section">
-   182 |           <div className="section-inner">
-   183 |             <SectionHeading eyebrow="Keep wandering" title="Related exhibitions" />
-   184 |             <div className="exhibition-grid exhibition-grid-three">
-   185 |               {relatedExhibitions.map((item) => item && <ExhibitionCard key={item.id} exhibition={item} />)}
-   186 |             </div>
-   187 |           </div>
-   188 |         </section>
-   189 |       )}
-   190 |     </>
-   191 |   );
-   192 | }
+    20 |   const filtered = useMemo(() => {
+    21 |     const normalized = query.trim().toLowerCase();
+    22 |     return exhibitions.filter((exhibition) => {
+    23 |       const matchesQuery =
+    24 |         !normalized ||
+    25 |         `${exhibition.title} ${exhibition.dek} ${exhibition.description} ${exhibition.curator}`
+    26 |           .toLowerCase()
+    27 |           .includes(normalized);
+    28 |       const matchesCategory = category === 'All' || exhibition.category === category;
+    29 |       const matchesPeriod = period === 'All' || exhibition.period === period;
+    30 |       return matchesQuery && matchesCategory && matchesPeriod;
+    31 |     });
+    32 |   }, [query, category, period]);
+    33 | 
+    34 |   const featuredExhibition = filtered.find((exhibition) => exhibition.featured);
+    35 |   const remainingExhibitions = featuredExhibition
+    36 |     ? filtered.filter((exhibition) => exhibition.id !== featuredExhibition.id)
+    37 |     : filtered;
+    38 | 
+    39 |   const hasActiveFilters = query !== '' || category !== 'All' || period !== 'All';
+    40 | 
+    41 |   const resetFilters = () => {
+    42 |     setQuery('');
+    43 |     setCategory('All');
+    44 |     setPeriod('All');
+    45 |   };
+    46 | 
+    47 |   return (
+    48 |     <>
+    49 |       <PageHero
+    50 |         eyebrow="Exhibition program"
+    51 |         title="Galleries built around a question"
+    52 |         description="Each exhibition is a sequence of encounters—begin anywhere, follow what catches your eye, and let one object lead you to the next."
+    53 |         image="https://commons.wikimedia.org/wiki/Special:Redirect/file/Van%20Gogh%20-%20Starry%20Night%20-%20Google%20Art%20Project.jpg?width=1280"
+    54 |         imageAlt="A painted night sky above a quiet village"
+    55 |       />
+    56 | 
+    57 |       <section className="section">
+    58 |         <div className="section-inner">
+    59 |           <div className="section-heading-row">
+    60 |             <SectionHeading
+    61 |               eyebrow="Now showing"
+    62 |               title="Exhibitions with room to wander"
+    63 |               description="Filter the program by subject or period, or search for a curator, a theme, or an idea."
+    64 |             />
+    65 |             <span className="result-count">
+    66 |               {filtered.length} {filtered.length === 1 ? 'exhibition' : 'exhibitions'}
+    67 |             </span>
+    68 |           </div>
+    69 | 
+    70 |           <div className="filter-bar">
+    71 |             <label className="filter-search">
+    72 |               <span className="sr-only">Search exhibitions</span>
+    73 |               <input
+    74 |                 value={query}
+    75 |                 onChange={(event) => setQuery(event.target.value)}
+    76 |                 placeholder="Search exhibitions, curators, or themes"
+    77 |                 type="search"
+    78 |               />
+    79 |             </label>
+    80 |             <label>
+    81 |               <span>Subject</span>
+    82 |               <select value={category} onChange={(event) => setCategory(event.target.value)}>
+    83 |                 {categories.map((item) => (
+    84 |                   <option key={item}>{item}</option>
+    85 |                 ))}
+    86 |               </select>
+    87 |             </label>
+    88 |             <label>
+    89 |               <span>Period</span>
+    90 |               <select value={period} onChange={(event) => setPeriod(event.target.value)}>
+    91 |                 {periods.map((item) => (
+    92 |                   <option key={item}>{item}</option>
+    93 |                 ))}
+    94 |               </select>
+    95 |             </label>
+    96 |             {hasActiveFilters && (
+    97 |               <button className="filter-clear" type="button" onClick={resetFilters}>
+    98 |                 Clear filters
+    99 |               </button>
+   100 |             )}
+   101 |           </div>
+   102 | 
+   103 |           {filtered.length > 0 ? (
+   104 |             <>
+   105 |               {featuredExhibition && (
+   106 |                 <div className="exhibition-grid exhibition-grid-featured">
+   107 |                   <ExhibitionCard exhibition={featuredExhibition} featured />
+   108 |                 </div>
+   109 |               )}
+   110 |               {remainingExhibitions.length > 0 && (
+   111 |                 <div className="exhibition-grid exhibition-grid-results">
+   112 |                   {remainingExhibitions.map((exhibition) => (
+   113 |                     <ExhibitionCard key={exhibition.id} exhibition={exhibition} />
+   114 |                   ))}
+   115 |                 </div>
+   116 |               )}
+   117 |             </>
+   118 |           ) : (
+   119 |             <EmptyState
+   120 |               title="No exhibitions found"
+   121 |               description="Try a different search or broaden the subject and period filters to continue through the program."
+   122 |               action={
+   123 |                 <button className="button button-dark" type="button" onClick={resetFilters}>
+   124 |                   Reset the program
+   125 |                 </button>
+   126 |               }
+   127 |             />
+   128 |           )}
+   129 |         </div>
+   130 |       </section>
+   131 | 
+   132 |       <section className="section section-tinted">
+   133 |         <div className="section-inner collection-note-grid">
+   134 |           <div>
+   135 |             <p className="eyebrow">A living program</p>
+   136 |             <h2>Every gallery is a working draft.</h2>
+   137 |           </div>
+   138 |           <p>
+   139 |             Exhibitions in the Meridian Archive are designed to be replaced, reinterpreted, and
+   140 |             re-curated. The data model, object records, and editorial voice are all kept separate so a
+   141 |             real institution can swap in new stories without rebuilding the visitor experience.
+   142 |           </p>
+   143 |         </div>
+   144 |       </section>
+   145 |     </>
+   146 |   );
+   147 | }
 
 ================================================================================
 FILE: src/pages/FavoritesPage.tsx
