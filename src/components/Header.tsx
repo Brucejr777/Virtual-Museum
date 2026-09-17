@@ -13,11 +13,14 @@ const primaryLinks = [
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
   const navigate = useNavigate();
   const { favorites } = useFavorites();
 
-  useEffect(() => setMenuOpen(false), [pathname]);
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.classList.toggle('menu-is-open', menuOpen);
@@ -32,6 +35,13 @@ export function Header() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [menuOpen]);
+
+  // Keep the search field in sync with the URL when on the search page.
+  useEffect(() => {
+    if (pathname !== '/search') return;
+    const params = new URLSearchParams(location.search);
+    setQuery(params.get('q') ?? '');
+  }, [pathname, location.search]);
 
   const submitSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -67,6 +77,19 @@ export function Header() {
               ×
             </button>
           </div>
+
+          <form className="mobile-search" role="search" onSubmit={submitSearch}>
+            <label className="sr-only" htmlFor="mobile-site-search">Search the museum</label>
+            <input
+              id="mobile-site-search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search the archive"
+              type="search"
+            />
+            <button type="submit" aria-label="Submit search">→</button>
+          </form>
+
           {primaryLinks.map((link) => (
             <NavLink key={link.to} to={link.to}>
               {link.label}

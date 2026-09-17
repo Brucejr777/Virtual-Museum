@@ -4,17 +4,17 @@ import { ArtworkCard } from '../components/ArtworkCard';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { EmptyState } from '../components/UI';
 import { useFavorites } from '../context/FavoritesContext';
-import { artworks, getArtist } from '../data/museumData';
+import { artworks, getArtist, getArtwork } from '../data/museumData';
 
 export function ArtworkDetailPage() {
   const { artworkId = '' } = useParams();
-  const artwork = artworks.find((item) => item.id === artworkId);
+  const artwork = getArtwork(artworkId);
   const artist = artwork ? getArtist(artwork.artistId) : undefined;
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -28,9 +28,8 @@ export function ArtworkDetailPage() {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Move focus into the modal once it renders.
     const focusTimer = window.setTimeout(() => {
-      modalRef.current?.focus();
+      dialogRef.current?.focus();
     }, 0);
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -38,9 +37,9 @@ export function ArtworkDetailPage() {
         setZoomOpen(false);
         return;
       }
-      if (event.key !== 'Tab' || !modalRef.current) return;
+      if (event.key !== 'Tab' || !dialogRef.current) return;
 
-      const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       if (focusable.length === 0) return;
@@ -118,12 +117,14 @@ export function ArtworkDetailPage() {
             <div><dt>Location</dt><dd>{artwork.location}</dd></div>
           </dl>
           <button
-            className={`button ${favorite ? 'button-dark' : 'button-outline-dark'} favorite-detail-button`}
+            className={`button ${favorite ? 'button-dark' : 'button-outline-dark'} favorite-detail-button${favorite ? ' is-favorite' : ''}`}
             type="button"
             onClick={() => toggleFavorite(artwork.id)}
             aria-pressed={favorite}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.7C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-1 4.3-8.5 9-8.5 9Z" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.7C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-1 4.3-8.5 9-8.5 9Z" />
+            </svg>
             {favorite ? 'Saved to my collection' : 'Save to my collection'}
           </button>
         </div>
@@ -137,7 +138,10 @@ export function ArtworkDetailPage() {
           </div>
           <div>
             <p>{artwork.description} {artwork.context}</p>
-            <p className="context-pullquote">“An object is never only itself. It is a record of attention, material, and the hands that carried it forward.”</p>
+            <p className="context-pullquote">
+              “An object is never only itself. It is a record of attention, material, and the hands that
+              carried it forward.”
+            </p>
           </div>
         </div>
       </section>
@@ -150,7 +154,10 @@ export function ArtworkDetailPage() {
           </div>
           <div>
             <p>{artwork.provenance}</p>
-            <p>This fictional record is intentionally concise: it models the kind of transparent, replaceable metadata a real collection management system might expose.</p>
+            <p>
+              This fictional record is intentionally concise: it models the kind of transparent,
+              replaceable metadata a real collection management system might expose.
+            </p>
           </div>
         </div>
       </section>
@@ -162,7 +169,9 @@ export function ArtworkDetailPage() {
               <p className="eyebrow">Related creator</p>
               <h2>{artist.name}</h2>
               <p>{artist.bio}</p>
-              <Link className="text-link" to={`/artists/${artist.id}`}>View creator profile <span aria-hidden="true">→</span></Link>
+              <Link className="text-link" to={`/artists/${artist.id}`}>
+                View creator profile <span aria-hidden="true">→</span>
+              </Link>
             </div>
             <Link className="related-creator-image" to={`/artists/${artist.id}`}>
               <img src={artist.portrait} alt={`Portrait of ${artist.name}`} loading="lazy" />
@@ -184,50 +193,48 @@ export function ArtworkDetailPage() {
       </section>
 
       {zoomOpen && (
-        <div
-          className="image-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${artwork.title} image viewer`}
-          onClick={() => setZoomOpen(false)}
-        >
+        <div className="image-modal" onClick={() => setZoomOpen(false)}>
           <div
-            className="image-modal-content"
-            ref={modalRef}
+            className="image-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${artwork.title} image viewer`}
+            ref={dialogRef}
             tabIndex={-1}
-            style={{ transform: `scale(${zoom})` }}
             onClick={(event) => event.stopPropagation()}
           >
-            <button
-              className="image-modal-close"
-              type="button"
-              onClick={() => setZoomOpen(false)}
-              aria-label="Close image viewer"
-            >
-              ×
-            </button>
-            <img src={artwork.image} alt={artwork.title} />
-            <div className="image-modal-caption">
-              <strong>{artwork.title}</strong>
-              <span>{artist.name}, {artwork.date}</span>
+            <div className="image-modal-content" style={{ transform: `scale(${zoom})` }}>
+              <button
+                className="image-modal-close"
+                type="button"
+                onClick={() => setZoomOpen(false)}
+                aria-label="Close image viewer"
+              >
+                ×
+              </button>
+              <img src={artwork.image} alt={artwork.title} />
+              <div className="image-modal-caption">
+                <strong>{artwork.title}</strong>
+                <span>{artist.name}, {artwork.date}</span>
+              </div>
             </div>
-          </div>
-          <div className="image-modal-controls" onClick={(event) => event.stopPropagation()}>
-            <button
-              type="button"
-              onClick={() => setZoom((value) => Math.max(0.7, value - 0.2))}
-              aria-label="Zoom out"
-            >
-              −
-            </button>
-            <span>{Math.round(zoom * 100)}%</span>
-            <button
-              type="button"
-              onClick={() => setZoom((value) => Math.min(2.2, value + 0.2))}
-              aria-label="Zoom in"
-            >
-              +
-            </button>
+            <div className="image-modal-controls">
+              <button
+                type="button"
+                onClick={() => setZoom((value) => Math.max(0.7, value - 0.2))}
+                aria-label="Zoom out"
+              >
+                −
+              </button>
+              <span>{Math.round(zoom * 100)}%</span>
+              <button
+                type="button"
+                onClick={() => setZoom((value) => Math.min(2.2, value + 0.2))}
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+            </div>
           </div>
         </div>
       )}

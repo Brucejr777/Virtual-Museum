@@ -1,6 +1,14 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export function Footer() {
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubscribed(true);
+  };
+
   return (
     <footer className="site-footer">
       <div className="footer-feature">
@@ -35,11 +43,17 @@ export function Footer() {
         <div className="footer-column footer-newsletter">
           <h3>Field notes</h3>
           <p>Occasional dispatches from the archive, without the noise.</p>
-          <form onSubmit={(event) => event.preventDefault()}>
-            <label className="sr-only" htmlFor="newsletter-email">Email address</label>
-            <input id="newsletter-email" type="email" placeholder="Your email address" required />
-            <button type="submit" aria-label="Subscribe">→</button>
-          </form>
+          {subscribed ? (
+            <p className="newsletter-confirmation" role="status">
+              Thanks — you are on the list.
+            </p>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <label className="sr-only" htmlFor="newsletter-email">Email address</label>
+              <input id="newsletter-email" type="email" placeholder="Your email address" required />
+              <button type="submit" aria-label="Subscribe">→</button>
+            </form>
+          )}
         </div>
       </div>
       <div className="footer-bottom">

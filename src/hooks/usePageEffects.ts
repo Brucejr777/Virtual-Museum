@@ -2,14 +2,18 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export function usePageEffects() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    // Let the browser handle in-page anchor navigation.
+    if (hash) return;
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [pathname]);
+  }, [pathname, hash]);
 
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    if (elements.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -24,5 +28,5 @@ export function usePageEffects() {
 
     elements.forEach((element) => observer.observe(element));
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [pathname, hash]);
 }

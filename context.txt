@@ -1,6 +1,6 @@
 AI PROJECT CONTEXT
 Source directory: C:\Users\brutsche\Documents\AI Output Tests\Portfolio\VirtualMuseum\Virtual-Museum
-Files included: 38
+Files included: 39
 
 ================================================================================
 FILE: .gitignore
@@ -252,17 +252,17 @@ FILE: package-lock.json
      9 |         "react": "^19.0.0",
     10 |         "react-dom": "^19.0.0",
     11 |         "react-router-dom": "^7.0.0",
-    12 |         "typescript": "^5.8.0",
-    13 |         "vite": "^7.0.0"
-    14 |       },
-    15 |       "devDependencies": {
-    16 |         "@eslint/js": "^10.0.1",
-    17 |         "@types/react": "^19.3.0",
-    18 |         "@types/react-dom": "^19.3.0",
-    19 |         "eslint": "^10.10.0",
-    20 |         "eslint-plugin-react-hooks": "^7.1.1",
-    21 |         "eslint-plugin-react-refresh": "^0.5.7",
-    22 |         "globals": "^17.12.0",
+    12 |         "vite": "^7.0.0"
+    13 |       },
+    14 |       "devDependencies": {
+    15 |         "@eslint/js": "^10.0.1",
+    16 |         "@types/react": "^19.3.0",
+    17 |         "@types/react-dom": "^19.3.0",
+    18 |         "eslint": "^10.10.0",
+    19 |         "eslint-plugin-react-hooks": "^7.1.1",
+    20 |         "eslint-plugin-react-refresh": "^0.5.7",
+    21 |         "globals": "^17.12.0",
+    22 |         "typescript": "^5.8.0",
     23 |         "typescript-eslint": "^8.70.0"
     24 |       }
     25 |     },
@@ -3163,223 +3163,224 @@ FILE: package-lock.json
   2920 |       "version": "5.9.3",
   2921 |       "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
   2922 |       "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
-  2923 |       "license": "Apache-2.0",
-  2924 |       "bin": {
-  2925 |         "tsc": "bin/tsc",
-  2926 |         "tsserver": "bin/tsserver"
-  2927 |       },
-  2928 |       "engines": {
-  2929 |         "node": ">=14.17"
-  2930 |       }
-  2931 |     },
-  2932 |     "node_modules/typescript-eslint": {
-  2933 |       "version": "8.70.0",
-  2934 |       "resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.70.0.tgz",
-  2935 |       "integrity": "sha512-P/W5cz70/cQAuKfY3xwQMWWTV7BvJ0mAQmi+9mBcsVPaBUpd6Ohpa+fECv9rBFrQcig86jAiNBFNWUqnTjr4pw==",
-  2936 |       "dev": true,
-  2937 |       "license": "MIT",
-  2938 |       "dependencies": {
-  2939 |         "@typescript-eslint/eslint-plugin": "8.70.0",
-  2940 |         "@typescript-eslint/parser": "8.70.0",
-  2941 |         "@typescript-eslint/typescript-estree": "8.70.0",
-  2942 |         "@typescript-eslint/utils": "8.70.0"
-  2943 |       },
-  2944 |       "engines": {
-  2945 |         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
-  2946 |       },
-  2947 |       "funding": {
-  2948 |         "type": "opencollective",
-  2949 |         "url": "https://opencollective.com/typescript-eslint"
-  2950 |       },
-  2951 |       "peerDependencies": {
-  2952 |         "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
-  2953 |         "typescript": ">=4.8.4 <6.1.0"
-  2954 |       }
-  2955 |     },
-  2956 |     "node_modules/update-browserslist-db": {
-  2957 |       "version": "1.3.3",
-  2958 |       "resolved": "https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.3.3.tgz",
-  2959 |       "integrity": "sha512-pJ2sYawQS0R/WI928Gj5GlPhTGzbMelq0+4INtSYNDV9ErKJcX6xjGWkoG/VnB3dpUm00zALaqkrUD77pO5TDQ==",
-  2960 |       "funding": [
-  2961 |         {
-  2962 |           "type": "opencollective",
-  2963 |           "url": "https://opencollective.com/browserslist"
-  2964 |         },
-  2965 |         {
-  2966 |           "type": "tidelift",
-  2967 |           "url": "https://tidelift.com/funding/github/npm/browserslist"
-  2968 |         },
-  2969 |         {
-  2970 |           "type": "github",
-  2971 |           "url": "https://github.com/sponsors/ai"
-  2972 |         }
-  2973 |       ],
-  2974 |       "license": "MIT",
-  2975 |       "dependencies": {
-  2976 |         "escalade": "^3.2.0",
-  2977 |         "picocolors": "^1.1.1"
-  2978 |       },
-  2979 |       "bin": {
-  2980 |         "update-browserslist-db": "cli.js"
-  2981 |       },
-  2982 |       "peerDependencies": {
-  2983 |         "browserslist": ">= 4.21.0"
-  2984 |       }
-  2985 |     },
-  2986 |     "node_modules/uri-js": {
-  2987 |       "version": "4.4.1",
-  2988 |       "resolved": "https://registry.npmjs.org/uri-js/-/uri-js-4.4.1.tgz",
-  2989 |       "integrity": "sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==",
-  2990 |       "dev": true,
-  2991 |       "license": "BSD-2-Clause",
-  2992 |       "dependencies": {
-  2993 |         "punycode": "^2.1.0"
-  2994 |       }
-  2995 |     },
-  2996 |     "node_modules/vite": {
-  2997 |       "version": "7.3.6",
-  2998 |       "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.6.tgz",
-  2999 |       "integrity": "sha512-4XP60spRGjSZFf1qYH+dJIkK2znL3zQfl9KkOV9MkkRR/3Dls0dxaBsQPTloEc5BLXWPL9vsOxopxyKoMmDueg==",
-  3000 |       "license": "MIT",
-  3001 |       "dependencies": {
-  3002 |         "esbuild": "^0.27.0 || ^0.28.0",
-  3003 |         "fdir": "^6.5.0",
-  3004 |         "picomatch": "^4.0.3",
-  3005 |         "postcss": "^8.5.6",
-  3006 |         "rollup": "^4.43.0",
-  3007 |         "tinyglobby": "^0.2.15"
-  3008 |       },
-  3009 |       "bin": {
-  3010 |         "vite": "bin/vite.js"
-  3011 |       },
-  3012 |       "engines": {
-  3013 |         "node": "^20.19.0 || >=22.12.0"
-  3014 |       },
-  3015 |       "funding": {
-  3016 |         "url": "https://github.com/vitejs/vite?sponsor=1"
-  3017 |       },
-  3018 |       "optionalDependencies": {
-  3019 |         "fsevents": "~2.3.3"
-  3020 |       },
-  3021 |       "peerDependencies": {
-  3022 |         "@types/node": "^20.19.0 || >=22.12.0",
-  3023 |         "jiti": ">=1.21.0",
-  3024 |         "less": "^4.0.0",
-  3025 |         "lightningcss": "^1.21.0",
-  3026 |         "sass": "^1.70.0",
-  3027 |         "sass-embedded": "^1.70.0",
-  3028 |         "stylus": ">=0.54.8",
-  3029 |         "sugarss": "^5.0.0",
-  3030 |         "terser": "^5.16.0",
-  3031 |         "tsx": "^4.8.1",
-  3032 |         "yaml": "^2.4.2"
-  3033 |       },
-  3034 |       "peerDependenciesMeta": {
-  3035 |         "@types/node": {
-  3036 |           "optional": true
-  3037 |         },
-  3038 |         "jiti": {
-  3039 |           "optional": true
-  3040 |         },
-  3041 |         "less": {
-  3042 |           "optional": true
-  3043 |         },
-  3044 |         "lightningcss": {
-  3045 |           "optional": true
-  3046 |         },
-  3047 |         "sass": {
-  3048 |           "optional": true
-  3049 |         },
-  3050 |         "sass-embedded": {
-  3051 |           "optional": true
-  3052 |         },
-  3053 |         "stylus": {
-  3054 |           "optional": true
-  3055 |         },
-  3056 |         "sugarss": {
-  3057 |           "optional": true
-  3058 |         },
-  3059 |         "terser": {
-  3060 |           "optional": true
-  3061 |         },
-  3062 |         "tsx": {
-  3063 |           "optional": true
-  3064 |         },
-  3065 |         "yaml": {
-  3066 |           "optional": true
-  3067 |         }
-  3068 |       }
-  3069 |     },
-  3070 |     "node_modules/which": {
-  3071 |       "version": "2.0.2",
-  3072 |       "resolved": "https://registry.npmjs.org/which/-/which-2.0.2.tgz",
-  3073 |       "integrity": "sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==",
-  3074 |       "dev": true,
-  3075 |       "license": "ISC",
-  3076 |       "dependencies": {
-  3077 |         "isexe": "^2.0.0"
-  3078 |       },
-  3079 |       "bin": {
-  3080 |         "node-which": "bin/node-which"
-  3081 |       },
-  3082 |       "engines": {
-  3083 |         "node": ">= 8"
-  3084 |       }
-  3085 |     },
-  3086 |     "node_modules/word-wrap": {
-  3087 |       "version": "1.2.5",
-  3088 |       "resolved": "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.5.tgz",
-  3089 |       "integrity": "sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==",
-  3090 |       "dev": true,
-  3091 |       "license": "MIT",
-  3092 |       "engines": {
-  3093 |         "node": ">=0.10.0"
-  3094 |       }
-  3095 |     },
-  3096 |     "node_modules/yallist": {
-  3097 |       "version": "3.1.1",
-  3098 |       "resolved": "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz",
-  3099 |       "integrity": "sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==",
-  3100 |       "license": "ISC"
-  3101 |     },
-  3102 |     "node_modules/yocto-queue": {
-  3103 |       "version": "0.1.0",
-  3104 |       "resolved": "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz",
-  3105 |       "integrity": "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==",
-  3106 |       "dev": true,
-  3107 |       "license": "MIT",
-  3108 |       "engines": {
-  3109 |         "node": ">=10"
-  3110 |       },
-  3111 |       "funding": {
-  3112 |         "url": "https://github.com/sponsors/sindresorhus"
-  3113 |       }
-  3114 |     },
-  3115 |     "node_modules/zod": {
-  3116 |       "version": "4.6.5",
-  3117 |       "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
-  3118 |       "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
-  3119 |       "dev": true,
-  3120 |       "license": "MIT",
-  3121 |       "funding": {
-  3122 |         "url": "https://github.com/sponsors/colinhacks"
-  3123 |       }
-  3124 |     },
-  3125 |     "node_modules/zod-validation-error": {
-  3126 |       "version": "4.0.2",
-  3127 |       "resolved": "https://registry.npmjs.org/zod-validation-error/-/zod-validation-error-4.0.2.tgz",
-  3128 |       "integrity": "sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==",
-  3129 |       "dev": true,
-  3130 |       "license": "MIT",
-  3131 |       "engines": {
-  3132 |         "node": ">=18.0.0"
-  3133 |       },
-  3134 |       "peerDependencies": {
-  3135 |         "zod": "^3.25.0 || ^4.0.0"
-  3136 |       }
-  3137 |     }
-  3138 |   }
-  3139 | }
+  2923 |       "dev": true,
+  2924 |       "license": "Apache-2.0",
+  2925 |       "bin": {
+  2926 |         "tsc": "bin/tsc",
+  2927 |         "tsserver": "bin/tsserver"
+  2928 |       },
+  2929 |       "engines": {
+  2930 |         "node": ">=14.17"
+  2931 |       }
+  2932 |     },
+  2933 |     "node_modules/typescript-eslint": {
+  2934 |       "version": "8.70.0",
+  2935 |       "resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.70.0.tgz",
+  2936 |       "integrity": "sha512-P/W5cz70/cQAuKfY3xwQMWWTV7BvJ0mAQmi+9mBcsVPaBUpd6Ohpa+fECv9rBFrQcig86jAiNBFNWUqnTjr4pw==",
+  2937 |       "dev": true,
+  2938 |       "license": "MIT",
+  2939 |       "dependencies": {
+  2940 |         "@typescript-eslint/eslint-plugin": "8.70.0",
+  2941 |         "@typescript-eslint/parser": "8.70.0",
+  2942 |         "@typescript-eslint/typescript-estree": "8.70.0",
+  2943 |         "@typescript-eslint/utils": "8.70.0"
+  2944 |       },
+  2945 |       "engines": {
+  2946 |         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+  2947 |       },
+  2948 |       "funding": {
+  2949 |         "type": "opencollective",
+  2950 |         "url": "https://opencollective.com/typescript-eslint"
+  2951 |       },
+  2952 |       "peerDependencies": {
+  2953 |         "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
+  2954 |         "typescript": ">=4.8.4 <6.1.0"
+  2955 |       }
+  2956 |     },
+  2957 |     "node_modules/update-browserslist-db": {
+  2958 |       "version": "1.3.3",
+  2959 |       "resolved": "https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.3.3.tgz",
+  2960 |       "integrity": "sha512-pJ2sYawQS0R/WI928Gj5GlPhTGzbMelq0+4INtSYNDV9ErKJcX6xjGWkoG/VnB3dpUm00zALaqkrUD77pO5TDQ==",
+  2961 |       "funding": [
+  2962 |         {
+  2963 |           "type": "opencollective",
+  2964 |           "url": "https://opencollective.com/browserslist"
+  2965 |         },
+  2966 |         {
+  2967 |           "type": "tidelift",
+  2968 |           "url": "https://tidelift.com/funding/github/npm/browserslist"
+  2969 |         },
+  2970 |         {
+  2971 |           "type": "github",
+  2972 |           "url": "https://github.com/sponsors/ai"
+  2973 |         }
+  2974 |       ],
+  2975 |       "license": "MIT",
+  2976 |       "dependencies": {
+  2977 |         "escalade": "^3.2.0",
+  2978 |         "picocolors": "^1.1.1"
+  2979 |       },
+  2980 |       "bin": {
+  2981 |         "update-browserslist-db": "cli.js"
+  2982 |       },
+  2983 |       "peerDependencies": {
+  2984 |         "browserslist": ">= 4.21.0"
+  2985 |       }
+  2986 |     },
+  2987 |     "node_modules/uri-js": {
+  2988 |       "version": "4.4.1",
+  2989 |       "resolved": "https://registry.npmjs.org/uri-js/-/uri-js-4.4.1.tgz",
+  2990 |       "integrity": "sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==",
+  2991 |       "dev": true,
+  2992 |       "license": "BSD-2-Clause",
+  2993 |       "dependencies": {
+  2994 |         "punycode": "^2.1.0"
+  2995 |       }
+  2996 |     },
+  2997 |     "node_modules/vite": {
+  2998 |       "version": "7.3.6",
+  2999 |       "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.6.tgz",
+  3000 |       "integrity": "sha512-4XP60spRGjSZFf1qYH+dJIkK2znL3zQfl9KkOV9MkkRR/3Dls0dxaBsQPTloEc5BLXWPL9vsOxopxyKoMmDueg==",
+  3001 |       "license": "MIT",
+  3002 |       "dependencies": {
+  3003 |         "esbuild": "^0.27.0 || ^0.28.0",
+  3004 |         "fdir": "^6.5.0",
+  3005 |         "picomatch": "^4.0.3",
+  3006 |         "postcss": "^8.5.6",
+  3007 |         "rollup": "^4.43.0",
+  3008 |         "tinyglobby": "^0.2.15"
+  3009 |       },
+  3010 |       "bin": {
+  3011 |         "vite": "bin/vite.js"
+  3012 |       },
+  3013 |       "engines": {
+  3014 |         "node": "^20.19.0 || >=22.12.0"
+  3015 |       },
+  3016 |       "funding": {
+  3017 |         "url": "https://github.com/vitejs/vite?sponsor=1"
+  3018 |       },
+  3019 |       "optionalDependencies": {
+  3020 |         "fsevents": "~2.3.3"
+  3021 |       },
+  3022 |       "peerDependencies": {
+  3023 |         "@types/node": "^20.19.0 || >=22.12.0",
+  3024 |         "jiti": ">=1.21.0",
+  3025 |         "less": "^4.0.0",
+  3026 |         "lightningcss": "^1.21.0",
+  3027 |         "sass": "^1.70.0",
+  3028 |         "sass-embedded": "^1.70.0",
+  3029 |         "stylus": ">=0.54.8",
+  3030 |         "sugarss": "^5.0.0",
+  3031 |         "terser": "^5.16.0",
+  3032 |         "tsx": "^4.8.1",
+  3033 |         "yaml": "^2.4.2"
+  3034 |       },
+  3035 |       "peerDependenciesMeta": {
+  3036 |         "@types/node": {
+  3037 |           "optional": true
+  3038 |         },
+  3039 |         "jiti": {
+  3040 |           "optional": true
+  3041 |         },
+  3042 |         "less": {
+  3043 |           "optional": true
+  3044 |         },
+  3045 |         "lightningcss": {
+  3046 |           "optional": true
+  3047 |         },
+  3048 |         "sass": {
+  3049 |           "optional": true
+  3050 |         },
+  3051 |         "sass-embedded": {
+  3052 |           "optional": true
+  3053 |         },
+  3054 |         "stylus": {
+  3055 |           "optional": true
+  3056 |         },
+  3057 |         "sugarss": {
+  3058 |           "optional": true
+  3059 |         },
+  3060 |         "terser": {
+  3061 |           "optional": true
+  3062 |         },
+  3063 |         "tsx": {
+  3064 |           "optional": true
+  3065 |         },
+  3066 |         "yaml": {
+  3067 |           "optional": true
+  3068 |         }
+  3069 |       }
+  3070 |     },
+  3071 |     "node_modules/which": {
+  3072 |       "version": "2.0.2",
+  3073 |       "resolved": "https://registry.npmjs.org/which/-/which-2.0.2.tgz",
+  3074 |       "integrity": "sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==",
+  3075 |       "dev": true,
+  3076 |       "license": "ISC",
+  3077 |       "dependencies": {
+  3078 |         "isexe": "^2.0.0"
+  3079 |       },
+  3080 |       "bin": {
+  3081 |         "node-which": "bin/node-which"
+  3082 |       },
+  3083 |       "engines": {
+  3084 |         "node": ">= 8"
+  3085 |       }
+  3086 |     },
+  3087 |     "node_modules/word-wrap": {
+  3088 |       "version": "1.2.5",
+  3089 |       "resolved": "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.5.tgz",
+  3090 |       "integrity": "sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==",
+  3091 |       "dev": true,
+  3092 |       "license": "MIT",
+  3093 |       "engines": {
+  3094 |         "node": ">=0.10.0"
+  3095 |       }
+  3096 |     },
+  3097 |     "node_modules/yallist": {
+  3098 |       "version": "3.1.1",
+  3099 |       "resolved": "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz",
+  3100 |       "integrity": "sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==",
+  3101 |       "license": "ISC"
+  3102 |     },
+  3103 |     "node_modules/yocto-queue": {
+  3104 |       "version": "0.1.0",
+  3105 |       "resolved": "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz",
+  3106 |       "integrity": "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==",
+  3107 |       "dev": true,
+  3108 |       "license": "MIT",
+  3109 |       "engines": {
+  3110 |         "node": ">=10"
+  3111 |       },
+  3112 |       "funding": {
+  3113 |         "url": "https://github.com/sponsors/sindresorhus"
+  3114 |       }
+  3115 |     },
+  3116 |     "node_modules/zod": {
+  3117 |       "version": "4.6.5",
+  3118 |       "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+  3119 |       "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
+  3120 |       "dev": true,
+  3121 |       "license": "MIT",
+  3122 |       "funding": {
+  3123 |         "url": "https://github.com/sponsors/colinhacks"
+  3124 |       }
+  3125 |     },
+  3126 |     "node_modules/zod-validation-error": {
+  3127 |       "version": "4.0.2",
+  3128 |       "resolved": "https://registry.npmjs.org/zod-validation-error/-/zod-validation-error-4.0.2.tgz",
+  3129 |       "integrity": "sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==",
+  3130 |       "dev": true,
+  3131 |       "license": "MIT",
+  3132 |       "engines": {
+  3133 |         "node": ">=18.0.0"
+  3134 |       },
+  3135 |       "peerDependencies": {
+  3136 |         "zod": "^3.25.0 || ^4.0.0"
+  3137 |       }
+  3138 |     }
+  3139 |   }
+  3140 | }
 
 ================================================================================
 FILE: package.json
@@ -6254,6 +6255,11 @@ FILE: src/types.ts
     75 |   collections: Collection[];
     76 |   timeline: TimelineEvent[];
     77 | };
+
+================================================================================
+FILE: src/vite-env.d.ts
+--------------------------------------------------------------------------------
+     1 | /// <reference types="vite/client" />
 
 ================================================================================
 FILE: tsconfig.json
