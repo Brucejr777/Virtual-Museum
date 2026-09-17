@@ -12,6 +12,8 @@ const titles: Record<string, string> = {
   '/artists': 'Artists & Creators — The Meridian Archive',
   '/timeline': 'Timeline — The Meridian Archive',
   '/search': 'Search — The Meridian Archive',
+  '/tours': 'Guided Tours — The Meridian Archive',
+  '/compare': 'Compare Works — The Meridian Archive',
   '/about': 'About — The Meridian Archive',
   '/favorites': 'My Collection — The Meridian Archive',
   '/404': 'Not found — The Meridian Archive',

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCommandPalette } from '../context/CommandPaletteContext';
 import { artists, artworks, collections, exhibitions, timeline } from '../data/museumData';
+import { tours } from '../data/tours';
 
 type Command = {
   id: string;
@@ -56,6 +57,16 @@ function buildCommandIndex(): Command[] {
     }),
   );
 
+  tours.forEach((tour) =>
+    commands.push({
+      id: `tour-${tour.id}`,
+      label: tour.title,
+      hint: `Tour · ${tour.steps.length} stops`,
+      group: 'Tours',
+      to: `/tours/${tour.slug}`,
+    }),
+  );
+
   timeline.forEach((event) =>
     commands.push({
       id: `event-${event.id}`,
@@ -70,9 +81,11 @@ function buildCommandIndex(): Command[] {
     { id: 'nav-home', label: 'Home', hint: 'Entrance', to: '/' },
     { id: 'nav-exhibitions', label: 'Exhibitions', hint: 'Program', to: '/exhibitions' },
     { id: 'nav-collections', label: 'Collections', hint: 'Browse', to: '/collections' },
+    { id: 'nav-tours', label: 'Guided tours', hint: 'Take a walk', to: '/tours' },
     { id: 'nav-artists', label: 'Artists', hint: 'Directory', to: '/artists' },
     { id: 'nav-timeline', label: 'Timeline', hint: 'History', to: '/timeline' },
     { id: 'nav-search', label: 'Search', hint: 'Find anything', to: '/search' },
+    { id: 'nav-compare', label: 'Compare works', hint: 'Side by side', to: '/compare' },
     { id: 'nav-favorites', label: 'My Collection', hint: 'Saved works', to: '/favorites' },
     { id: 'nav-about', label: 'About', hint: 'Our story', to: '/about' },
   ];
@@ -168,7 +181,7 @@ export function CommandPalette() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={handleInputKeyDown}
-            placeholder="Search works, artists, exhibitions, or pages…"
+            placeholder="Search works, artists, tours, or pages…"
             aria-label="Search commands"
             autoComplete="off"
           />
@@ -195,7 +208,7 @@ export function CommandPalette() {
             ))}
           </ul>
         ) : (
-          <p className="command-empty">No matches. Try “light”, “Egypt”, or “Van Gogh”.</p>
+          <p className="command-empty">No matches. Try “light”, “Egypt”, or “night”.</p>
         )}
 
         <div className="command-footer">

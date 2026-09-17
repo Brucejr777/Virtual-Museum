@@ -3,9 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import { ArtworkCard } from '../components/ArtworkCard';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { EmptyState } from '../components/UI';
+import { useCompare } from '../context/CompareContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useRecentlyViewed } from '../context/RecentlyViewedContext';
+import { useSpeech } from '../hooks/useSpeech';
 import { artworks, getArtist, getArtwork } from '../data/museumData';
+import type { Artwork } from '../types';
 
 export function ArtworkDetailPage() {
   const { artworkId = '' } = useParams();
@@ -13,9 +16,12 @@ export function ArtworkDetailPage() {
   const artist = artwork ? getArtist(artwork.artistId) : undefined;
   const { isFavorite, toggleFavorite } = useFavorites();
   const { recordView } = useRecentlyViewed();
+  const { isComparing, toggleCompare, isFull } = useCompare();
+  const { speak, stop, isSpeaking, supported } = useSpeech();
 
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const [shareStatus, setShareStatus] = useState('');
   const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
@@ -26,8 +32,18 @@ export function ArtworkDetailPage() {
     if (artwork) recordView(artwork.id);
   }, [artwork, recordView]);
 
+  // Cancel any speech when the object changes.
+  useEffect(() => {
+    stop();
+  }, [artworkId, stop]);
+
   useEffect(() => {
     if (!zoomOpen) setZoom(1);
+  }, [zoomOpen]);
+
+  // Reset lightbox index whenever we open it.
+  useEffect(() => {
+    if (zoomOpen) setLightboxIndex(0);
   }, [zoomOpen]);
 
   useEffect(() => {
@@ -44,6 +60,14 @@ export function ArtworkDetailPage() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setZoomOpen(false);
+        return;
+      }
+      if (event.key === 'ArrowRight') {
+        setLightboxIndex((i) => (i + 1) % Math.max(1, galleryWorks.length));
+        return;
+      }
+      if (event.key === 'ArrowLeft') {
+        setLightboxIndex((i) => (i - 1 + Math.max(1, galleryWorks.length)) % Math.max(1, galleryWorks.length));
         return;
       }
       if (event.key !== 'Tab' || !dialogRef.current) return;
@@ -73,6 +97,7 @@ export function ArtworkDetailPage() {
       document.body.style.overflow = previousOverflow;
       returnFocusRef.current?.focus();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomOpen]);
 
   if (!artwork || !artist) {
@@ -94,6 +119,13 @@ export function ArtworkDetailPage() {
     )
     .slice(0, 3);
   const favorite = isFavorite(artwork.id);
+  const comparing = isComparing(artwork.id);
+  const compareDisabled = !comparing && isFull;
+
+  // Gallery used by the lightbox: the current artwork first, then related works.
+  const galleryWorks: Artwork[] = [artwork, ...related];
+  const lightboxArtwork = galleryWorks[lightboxIndex] ?? artwork;
+  const lightboxArtist = getArtist(lightboxArtwork.artistId);
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/works/${artwork.id}`;
@@ -119,6 +151,8 @@ export function ArtworkDetailPage() {
     }
     window.setTimeout(() => setShareStatus(''), 2600);
   };
+
+  const audioText = `${artwork.title}. By ${artist.name}, ${artwork.date}. ${artwork.description} ${artwork.context}`;
 
   return (
     <>
@@ -162,6 +196,41 @@ export function ArtworkDetailPage() {
               </svg>
               {favorite ? 'Saved to my collection' : 'Save to my collection'}
             </button>
+            <button
+              className={`button ${comparing ? 'button-dark' : 'button-outline-dark'}`}
+              type="button"
+              onClick={() => toggleCompare(artwork.id)}
+              disabled={compareDisabled}
+              aria-pressed={comparing}
+              title={compareDisabled ? 'Comparison is full (3 works max)' : undefined}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="8" height="14" />
+                <rect x="13" y="5" width="8" height="14" />
+              </svg>
+              {comparing ? 'In comparison' : compareDisabled ? 'Comparison full' : 'Add to compare'}
+            </button>
+            {supported && (
+              <button
+                className="button button-outline-dark audio-guide-button"
+                type="button"
+                onClick={() => (isSpeaking ? stop() : speak(audioText))}
+                aria-pressed={isSpeaking}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+                  {isSpeaking ? (
+                    <>
+                      <path d="M16 8.5a5 5 0 0 1 0 7" />
+                      <path d="M19 6a9 9 0 0 1 0 12" />
+                    </>
+                  ) : (
+                    <path d="M16 8.5a5 5 0 0 1 0 7" />
+                  )}
+                </svg>
+                {isSpeaking ? 'Stop audio' : 'Listen to this work'}
+              </button>
+            )}
             <button
               className="button button-outline-dark share-detail-button"
               type="button"
@@ -250,7 +319,7 @@ export function ArtworkDetailPage() {
             className="image-modal-dialog"
             role="dialog"
             aria-modal="true"
-            aria-label={`${artwork.title} image viewer`}
+            aria-label={`${lightboxArtwork.title} image viewer`}
             ref={dialogRef}
             tabIndex={-1}
             onClick={(event) => event.stopPropagation()}
@@ -264,12 +333,37 @@ export function ArtworkDetailPage() {
               >
                 ×
               </button>
-              <img src={artwork.image} alt={artwork.title} />
+              <img src={lightboxArtwork.image} alt={lightboxArtwork.title} />
               <div className="image-modal-caption">
-                <strong>{artwork.title}</strong>
-                <span>{artist.name}, {artwork.date}</span>
+                <strong>{lightboxArtwork.title}</strong>
+                <span>
+                  {lightboxArtist?.name ?? 'Unknown maker'}, {lightboxArtwork.date}
+                </span>
               </div>
             </div>
+            {galleryWorks.length > 1 && (
+              <div className="image-modal-nav" aria-label="Gallery navigation">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setLightboxIndex((i) => (i - 1 + galleryWorks.length) % galleryWorks.length)
+                  }
+                  aria-label="Previous work"
+                >
+                  ←
+                </button>
+                <span>
+                  {lightboxIndex + 1} / {galleryWorks.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex((i) => (i + 1) % galleryWorks.length)}
+                  aria-label="Next work"
+                >
+                  →
+                </button>
+              </div>
+            )}
             <div className="image-modal-controls">
               <button
                 type="button"

@@ -1,7 +1,9 @@
 import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from './components/AppShell';
+import { CompareBar } from './components/CompareBar';
 import { CommandPaletteProvider } from './context/CommandPaletteContext';
+import { CompareProvider } from './context/CompareContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { RecentlyViewedProvider } from './context/RecentlyViewedContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -25,6 +27,9 @@ const ArtworkDetailPage = lazy(() =>
 const CollectionsPage = lazy(() =>
   import('./pages/CollectionsPage').then((module) => ({ default: module.CollectionsPage })),
 );
+const ComparePage = lazy(() =>
+  import('./pages/ComparePage').then((module) => ({ default: module.ComparePage })),
+);
 const ExhibitionDetailPage = lazy(() =>
   import('./pages/ExhibitionDetailPage').then((module) => ({ default: module.ExhibitionDetailPage })),
 );
@@ -39,6 +44,12 @@ const SearchPage = lazy(() =>
 );
 const TimelinePage = lazy(() =>
   import('./pages/TimelinePage').then((module) => ({ default: module.TimelinePage })),
+);
+const TourDetailPage = lazy(() =>
+  import('./pages/TourDetailPage').then((module) => ({ default: module.TourDetailPage })),
+);
+const ToursPage = lazy(() =>
+  import('./pages/ToursPage').then((module) => ({ default: module.ToursPage })),
 );
 
 function RouteFallback() {
@@ -55,28 +66,34 @@ export default function App() {
     <ThemeProvider>
       <FavoritesProvider>
         <RecentlyViewedProvider>
-          <CommandPaletteProvider>
-            <Suspense fallback={<RouteFallback />}>
-              <Routes>
-                {/* Layout route: AppShell renders once and <Outlet /> swaps pages. */}
-                <Route element={<AppShell />}>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/exhibitions" element={<ExhibitionsPage />} />
-                  <Route path="/exhibitions/:slug" element={<ExhibitionDetailPage />} />
-                  <Route path="/works/:artworkId" element={<ArtworkDetailPage />} />
-                  <Route path="/collections" element={<CollectionsPage />} />
-                  <Route path="/artists" element={<ArtistsPage />} />
-                  <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
-                  <Route path="/timeline" element={<TimelinePage />} />
-                  <Route path="/search" element={<SearchPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/favorites" element={<FavoritesPage />} />
-                  <Route path="/404" element={<NotFoundPage />} />
-                  <Route path="*" element={<Navigate to="/404" replace />} />
-                </Route>
-              </Routes>
-            </Suspense>
-          </CommandPaletteProvider>
+          <CompareProvider>
+            <CommandPaletteProvider>
+              <Suspense fallback={<RouteFallback />}>
+                <Routes>
+                  {/* Layout route: AppShell renders once and <Outlet /> swaps pages. */}
+                  <Route element={<AppShell />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/exhibitions" element={<ExhibitionsPage />} />
+                    <Route path="/exhibitions/:slug" element={<ExhibitionDetailPage />} />
+                    <Route path="/works/:artworkId" element={<ArtworkDetailPage />} />
+                    <Route path="/collections" element={<CollectionsPage />} />
+                    <Route path="/artists" element={<ArtistsPage />} />
+                    <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
+                    <Route path="/timeline" element={<TimelinePage />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/tours" element={<ToursPage />} />
+                    <Route path="/tours/:slug" element={<TourDetailPage />} />
+                    <Route path="/compare" element={<ComparePage />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/favorites" element={<FavoritesPage />} />
+                    <Route path="/404" element={<NotFoundPage />} />
+                    <Route path="*" element={<Navigate to="/404" replace />} />
+                  </Route>
+                </Routes>
+              </Suspense>
+              <CompareBar />
+            </CommandPaletteProvider>
+          </CompareProvider>
         </RecentlyViewedProvider>
       </FavoritesProvider>
     </ThemeProvider>

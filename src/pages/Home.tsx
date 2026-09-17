@@ -4,6 +4,7 @@ import { CollectionCard } from '../components/CollectionCard';
 import { ArtistCard } from '../components/ArtistCard';
 import { SectionHeading } from '../components/UI';
 import { artists, artworks, collections, exhibitions, timeline } from '../data/museumData';
+import { tours } from '../data/tours';
 
 export function Home() {
   const featuredExhibition = exhibitions.find((exhibition) => exhibition.featured);
@@ -25,7 +26,7 @@ export function Home() {
           <p className="home-hero-dek">Step into a borderless collection of paintings, artifacts, manuscripts, and ideas—curated for slow looking and unexpected connections.</p>
           <div className="home-hero-actions">
             <Link className="button button-light" to="/exhibitions">Explore exhibitions</Link>
-            <Link className="button button-outline-light" to="/collections">Browse collections</Link>
+            <Link className="button button-outline-light" to="/tours">Take a guided tour</Link>
           </div>
         </div>
         <div className="home-hero-foot">
@@ -59,6 +60,33 @@ export function Home() {
           <div className="exhibition-grid">
             {currentExhibitions.map((exhibition, index) => (
               <ExhibitionCard key={exhibition.id} exhibition={exhibition} featured={index === 0} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section tours-preview">
+        <div className="section-inner">
+          <div className="section-heading-row">
+            <SectionHeading eyebrow="Guided tours" title="Follow a route, or wander off it" description="Curated walks through the archive — each one built around a question, a mood, or a material." />
+            <Link className="text-link section-all-link" to="/tours">All tours <span aria-hidden="true">→</span></Link>
+          </div>
+          <div className="tour-grid tour-grid-three">
+            {tours.map((tour) => (
+              <article className="tour-card" key={tour.id}>
+                <Link className="tour-card-image" to={`/tours/${tour.slug}`} aria-label={`Open tour ${tour.title}`}>
+                  <img src={tour.coverImage} alt="" loading="lazy" />
+                  <span className="tour-card-badge">{tour.steps.length} stops</span>
+                </Link>
+                <div className="tour-card-body">
+                  <p className="eyebrow">{tour.pace} · {tour.duration}</p>
+                  <h3><Link to={`/tours/${tour.slug}`}>{tour.title}</Link></h3>
+                  <p className="tour-card-dek">{tour.dek}</p>
+                  <Link className="text-link" to={`/tours/${tour.slug}`}>
+                    Begin tour <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </article>
             ))}
           </div>
         </div>

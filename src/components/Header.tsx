@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useCompare } from '../context/CompareContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useTheme } from '../context/ThemeContext';
 import { useCommandPalette } from '../context/CommandPaletteContext';
@@ -7,6 +8,7 @@ import { useCommandPalette } from '../context/CommandPaletteContext';
 const primaryLinks = [
   { to: '/exhibitions', label: 'Exhibitions' },
   { to: '/collections', label: 'Collections' },
+  { to: '/tours', label: 'Tours' },
   { to: '/artists', label: 'Artists' },
   { to: '/timeline', label: 'Timeline' },
   { to: '/about', label: 'About' },
@@ -19,6 +21,7 @@ export function Header() {
   const { pathname } = location;
   const navigate = useNavigate();
   const { favorites } = useFavorites();
+  const { count: compareCount } = useCompare();
   const { theme, toggleTheme } = useTheme();
   const { openPalette } = useCommandPalette();
 
@@ -102,6 +105,11 @@ export function Header() {
           <Link className="mobile-favorites-link" to="/favorites">
             My collection <span>{favorites.length}</span>
           </Link>
+          {compareCount > 0 && (
+            <Link className="mobile-favorites-link" to="/compare">
+              Compare <span>{compareCount}</span>
+            </Link>
+          )}
         </nav>
 
         <div className="header-actions">

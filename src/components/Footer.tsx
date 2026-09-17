@@ -30,6 +30,7 @@ export function Footer() {
           <h3>Visit</h3>
           <Link to="/exhibitions">Exhibitions</Link>
           <Link to="/collections">Collections</Link>
+          <Link to="/tours">Guided tours</Link>
           <Link to="/timeline">Timeline</Link>
           <Link to="/favorites">My collection</Link>
         </div>
@@ -37,6 +38,7 @@ export function Footer() {
           <h3>Discover</h3>
           <Link to="/artists">Artists</Link>
           <Link to="/search">Search</Link>
+          <Link to="/compare">Compare works</Link>
           <Link to="/about">Our story</Link>
           <Link to="/about#contact">Contact</Link>
         </div>

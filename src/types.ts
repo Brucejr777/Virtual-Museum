@@ -68,6 +68,25 @@ export type TimelineEvent = {
   artistId?: string;
 };
 
+export type TourStep = {
+  artworkId: string;
+  title: string;
+  note: string;
+  prompt: string;
+};
+
+export type Tour = {
+  id: string;
+  slug: string;
+  title: string;
+  dek: string;
+  description: string;
+  duration: string;
+  pace: string;
+  coverImage: string;
+  steps: TourStep[];
+};
+
 export type MuseumData = {
   artists: Artist[];
   artworks: Artwork[];
