@@ -24,6 +24,15 @@ export function Header() {
     return () => document.body.classList.remove('menu-is-open');
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen]);
+
   const submitSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const value = query.trim();
@@ -42,7 +51,11 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className={`primary-nav${menuOpen ? ' is-open' : ''}`} aria-label="Primary navigation">
+        <nav
+          id="primary-navigation"
+          className={`primary-nav${menuOpen ? ' is-open' : ''}`}
+          aria-label="Primary navigation"
+        >
           <div className="mobile-nav-top">
             <span>Explore the archive</span>
             <button
@@ -75,11 +88,16 @@ export function Header() {
               type="search"
             />
             <button type="submit" aria-label="Submit search">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5" />
+                <path d="m16 16 4 4" />
+              </svg>
             </button>
           </form>
           <Link className="favorites-link" to="/favorites" aria-label={`My collection, ${favorites.length} items`}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.7C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-1 4.3-8.5 9-8.5 9Z" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.7C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-1 4.3-8.5 9-8.5 9Z" />
+            </svg>
             <span>{favorites.length}</span>
           </Link>
           <button

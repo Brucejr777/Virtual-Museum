@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArtworkCard } from '../components/ArtworkCard';
 import { Breadcrumbs } from '../components/Breadcrumbs';
@@ -11,26 +11,80 @@ export function ArtworkDetailPage() {
   const artwork = artworks.find((item) => item.id === artworkId);
   const artist = artwork ? getArtist(artwork.artistId) : undefined;
   const { isFavorite, toggleFavorite } = useFavorites();
+
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!zoomOpen) setZoom(1);
   }, [zoomOpen]);
 
   useEffect(() => {
+    if (!zoomOpen) return;
+
+    returnFocusRef.current = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    // Move focus into the modal once it renders.
+    const focusTimer = window.setTimeout(() => {
+      modalRef.current?.focus();
+    }, 0);
+
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setZoomOpen(false);
+      if (event.key === 'Escape') {
+        setZoomOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab' || !modalRef.current) return;
+
+      const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
+
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousOverflow;
+      returnFocusRef.current?.focus();
+    };
+  }, [zoomOpen]);
 
   if (!artwork || !artist) {
-    return <EmptyState title="Object not found" description="This record may be between installations. Return to the archive to keep exploring." action={<Link className="button button-dark" to="/collections">Browse collections</Link>} />;
+    return (
+      <EmptyState
+        title="Object not found"
+        description="This record may be between installations. Return to the archive to keep exploring."
+        action={<Link className="button button-dark" to="/collections">Browse collections</Link>}
+      />
+    );
   }
 
-  const related = artworks.filter((item) => item.id !== artwork.id && (item.category === artwork.category || item.collectionIds.some((id) => artwork.collectionIds.includes(id)))).slice(0, 3);
+  const related = artworks
+    .filter(
+      (item) =>
+        item.id !== artwork.id &&
+        (item.category === artwork.category ||
+          item.collectionIds.some((id) => artwork.collectionIds.includes(id))),
+    )
+    .slice(0, 3);
   const favorite = isFavorite(artwork.id);
 
   return (
@@ -38,7 +92,12 @@ export function ArtworkDetailPage() {
       <Breadcrumbs items={[{ label: 'Collections', to: '/collections' }, { label: artwork.title }]} />
       <section className="artwork-detail">
         <div className="artwork-viewer">
-          <button className="artwork-viewer-image" type="button" onClick={() => setZoomOpen(true)} aria-label={`Open ${artwork.title} in image viewer`}>
+          <button
+            className="artwork-viewer-image"
+            type="button"
+            onClick={() => setZoomOpen(true)}
+            aria-label={`Open ${artwork.title} in image viewer`}
+          >
             <img src={artwork.image} alt={artwork.title} />
             <span className="viewer-hint">Click to enlarge</span>
           </button>
@@ -58,7 +117,12 @@ export function ArtworkDetailPage() {
             <div><dt>Dimensions</dt><dd>{artwork.dimensions}</dd></div>
             <div><dt>Location</dt><dd>{artwork.location}</dd></div>
           </dl>
-          <button className={`button ${favorite ? 'button-dark' : 'button-outline-dark'} favorite-detail-button`} type="button" onClick={() => toggleFavorite(artwork.id)} aria-pressed={favorite}>
+          <button
+            className={`button ${favorite ? 'button-dark' : 'button-outline-dark'} favorite-detail-button`}
+            type="button"
+            onClick={() => toggleFavorite(artwork.id)}
+            aria-pressed={favorite}
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.7C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-1 4.3-8.5 9-8.5 9Z" /></svg>
             {favorite ? 'Saved to my collection' : 'Save to my collection'}
           </button>
@@ -100,7 +164,9 @@ export function ArtworkDetailPage() {
               <p>{artist.bio}</p>
               <Link className="text-link" to={`/artists/${artist.id}`}>View creator profile <span aria-hidden="true">→</span></Link>
             </div>
-            <Link className="related-creator-image" to={`/artists/${artist.id}`}><img src={artist.portrait} alt={`Portrait of ${artist.name}`} loading="lazy" /></Link>
+            <Link className="related-creator-image" to={`/artists/${artist.id}`}>
+              <img src={artist.portrait} alt={`Portrait of ${artist.name}`} loading="lazy" />
+            </Link>
           </div>
         </div>
       </section>
@@ -111,21 +177,57 @@ export function ArtworkDetailPage() {
             <div><p className="eyebrow">Continue looking</p><h2>Related works</h2></div>
             <Link className="text-link" to="/collections">All works <span aria-hidden="true">→</span></Link>
           </div>
-          <div className="artwork-grid artwork-grid-three">{related.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div>
+          <div className="artwork-grid artwork-grid-three">
+            {related.map((item) => <ArtworkCard key={item.id} artwork={item} />)}
+          </div>
         </div>
       </section>
 
       {zoomOpen && (
-        <div className="image-modal" role="dialog" aria-modal="true" aria-label={`${artwork.title} image viewer`} onClick={() => setZoomOpen(false)}>
-          <div className="image-modal-content" style={{ transform: `scale(${zoom})` }} onClick={(event) => event.stopPropagation()}>
-            <button className="image-modal-close" type="button" onClick={() => setZoomOpen(false)} aria-label="Close image viewer">×</button>
+        <div
+          className="image-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${artwork.title} image viewer`}
+          onClick={() => setZoomOpen(false)}
+        >
+          <div
+            className="image-modal-content"
+            ref={modalRef}
+            tabIndex={-1}
+            style={{ transform: `scale(${zoom})` }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              className="image-modal-close"
+              type="button"
+              onClick={() => setZoomOpen(false)}
+              aria-label="Close image viewer"
+            >
+              ×
+            </button>
             <img src={artwork.image} alt={artwork.title} />
-            <div className="image-modal-caption"><strong>{artwork.title}</strong><span>{artist.name}, {artwork.date}</span></div>
+            <div className="image-modal-caption">
+              <strong>{artwork.title}</strong>
+              <span>{artist.name}, {artwork.date}</span>
+            </div>
           </div>
           <div className="image-modal-controls" onClick={(event) => event.stopPropagation()}>
-            <button type="button" onClick={() => setZoom((value) => Math.max(0.7, value - 0.2))} aria-label="Zoom out">−</button>
+            <button
+              type="button"
+              onClick={() => setZoom((value) => Math.max(0.7, value - 0.2))}
+              aria-label="Zoom out"
+            >
+              −
+            </button>
             <span>{Math.round(zoom * 100)}%</span>
-            <button type="button" onClick={() => setZoom((value) => Math.min(2.2, value + 0.2))} aria-label="Zoom in">+</button>
+            <button
+              type="button"
+              onClick={() => setZoom((value) => Math.min(2.2, value + 0.2))}
+              aria-label="Zoom in"
+            >
+              +
+            </button>
           </div>
         </div>
       )}

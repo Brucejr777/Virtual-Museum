@@ -671,7 +671,13 @@ export const museumData: MuseumData = {
   timeline,
 };
 
-export const getArtist = (id: string) => artists.find((artist) => artist.id === id);
-export const getArtwork = (id: string) => artworks.find((artwork) => artwork.id === id);
-export const getCollection = (id: string) => collections.find((collection) => collection.id === id);
-export const getExhibition = (id: string) => exhibitions.find((exhibition) => exhibition.id === id);
+// --- O(1) lookups -----------------------------------------------------------
+const artistsById = new Map(artists.map((artist) => [artist.id, artist]));
+const artworksById = new Map(artworks.map((artwork) => [artwork.id, artwork]));
+const collectionsById = new Map(collections.map((collection) => [collection.id, collection]));
+const exhibitionsById = new Map(exhibitions.map((exhibition) => [exhibition.id, exhibition]));
+
+export const getArtist = (id: string) => artistsById.get(id);
+export const getArtwork = (id: string) => artworksById.get(id);
+export const getCollection = (id: string) => collectionsById.get(id);
+export const getExhibition = (id: string) => exhibitionsById.get(id);

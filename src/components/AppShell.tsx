@@ -18,14 +18,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       '/search': 'Search — The Meridian Archive',
       '/about': 'About — The Meridian Archive',
       '/favorites': 'My Collection — The Meridian Archive',
+      '/404': 'Not found — The Meridian Archive',
     };
     document.title = titles[pathname] ?? 'The Meridian Archive';
   }, [pathname]);
 
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <Header />
-      <main id="main-content">{children}</main>
+      <main id="main-content" tabIndex={-1}>{children}</main>
       <Footer />
     </>
   );

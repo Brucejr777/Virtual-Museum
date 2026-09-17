@@ -15,14 +15,12 @@ import { TimelinePage } from './pages/TimelinePage';
 
 function NotFound() {
   return (
-    <AppShell>
-      <section className="not-found">
-        <p className="eyebrow">404</p>
-        <h1>This room is between installations.</h1>
-        <p>The page you requested is not part of the current gallery plan.</p>
-        <a className="button button-dark" href="/">Return to the museum</a>
-      </section>
-    </AppShell>
+    <section className="not-found">
+      <p className="eyebrow">404</p>
+      <h1>This room is between installations.</h1>
+      <p>The page you requested is not part of the current gallery plan.</p>
+      <a className="button button-dark" href="/">Return to the museum</a>
+    </section>
   );
 }
 
